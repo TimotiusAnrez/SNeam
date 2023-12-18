@@ -2,18 +2,24 @@ package Util;
 
 import java.sql.Connection;
 import java.sql.*;
+import com.mysql.cj.jdbc.Driver;;
 
 public class Database {
-    private static String url = "jdbc:mysql://localhost:3306/sneam"; // 数据库地址
-    private static String usn = "root";
-    private static String password = "password";
-    private static Connection con;
-    private static ResultSet rs;
-    private static Statement st;
+    private String url = "jdbc:mysql://localhost:3306/sneam"; 
+    private String usn = "root";
+    private String password = "password";
+    private Connection con;
+    private ResultSet rs;
+    private Statement st;
+    private static Database databaseInstance; //singleton
+
+
+    private Database() {}
+
 
     public void start(){
         try {
-            Class.forName("com.mysql.cj.jbdc.Driver");
+            Driver driverManager = new Driver();
             con = DriverManager.getConnection(url, usn, password);
         } catch (Exception e) {
            e.printStackTrace();
@@ -23,7 +29,7 @@ public class Database {
     public ResultSet execute(String sqlStatement){
         try {
             st = con.createStatement();
-            st.executeQuery(sqlStatement);
+            rs = st.executeQuery(sqlStatement);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -46,4 +52,12 @@ public class Database {
         }
     }
     
+    public static Database getDbInstance(){
+        if(databaseInstance == null){
+            databaseInstance = new Database();
+        }
+
+        return databaseInstance;
+    }
+
 }

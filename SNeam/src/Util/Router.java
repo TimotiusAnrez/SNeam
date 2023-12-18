@@ -2,6 +2,7 @@ package Util;
 
 import View.Login;
 import View.Register;
+import View.UserHome;
 import javafx.stage.Stage;
 
 public class Router {
@@ -9,10 +10,12 @@ public class Router {
     private Login login;
     private Register register;
     private static Router routerInstance;
+    private UserHome userHome;
 
 
     private Router(Stage primaryStage) {
         this.primaryStage = primaryStage;
+        primaryStage.setMaximized(true);
         
     }
     private Stage getStage(){
@@ -26,6 +29,11 @@ public class Router {
     public void displayRegister(){
         register = new Register();
         getStage().setScene(register.display());
+    }
+
+    public void displayUserHome(){
+        userHome = new UserHome();
+        getStage().setScene(userHome.display());
     }
     
     public void initiateRouter(){
