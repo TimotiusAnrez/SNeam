@@ -1,9 +1,9 @@
 package Model;
 
-public class Cart {
-    Cart cart;
+public class CartModel {
+    CartModel cart;
 
-    public Cart getCartByID(String UserID){
+    public CartModel getCartByID(String UserID){
         return cart;
     }
 }

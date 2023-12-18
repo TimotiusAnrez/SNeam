@@ -14,7 +14,13 @@ public class UserModel {
         this.user = user;
     }
 
-    public User getUserByID(String userID){
+    public User getUserByID(String Email){
+
+        User initialUser = new User("", "", "", "", "", "");
+        setUser(initialUser);
+
+        
+
         return getUser();
     }
 }
