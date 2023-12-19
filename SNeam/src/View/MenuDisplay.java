@@ -22,6 +22,7 @@ public class MenuDisplay {
         });
 
         register.setOnAction(e -> {
+            System.out.println("Clicked");
             routerInstance.displayRegister();
         });
 
@@ -33,6 +34,32 @@ public class MenuDisplay {
 
     public MenuBar dispayUserMenu(){
         menuBar = new MenuBar();
+
+        Menu dashboard = new Menu("Dashboard");
+        Menu logoutMenu = new Menu("Log Out");
+
+        MenuItem home = new MenuItem("Home");
+        MenuItem cart = new MenuItem("Cart");
+
+        home.setOnAction(e -> {
+
+        });
+
+        home.setOnAction(e -> {
+
+        });
+
+
+        MenuItem logout = new MenuItem("Log Out");
+
+        logout.setOnAction(e -> {
+            routerInstance.displayLogin();
+        });
+
+        dashboard.getItems().addAll(home,cart);
+        logoutMenu.getItems().addAll(logout);
+        menuBar.getMenus().addAll(dashboard, logoutMenu);
+        
 
         return menuBar;
     }
