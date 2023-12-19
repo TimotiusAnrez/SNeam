@@ -3,6 +3,7 @@ package View;
 import java.sql.SQLException;
 
 import Controller.AuthController;
+import Util.Router;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -17,14 +18,16 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 public class Register {
 
     private Scene primaryScene;
     private MenuDisplay menuBar = new MenuDisplay();
     private BorderPane mainLayout;
+    Router router = Router.getRouterInstance(new Stage());
 
-    private void displayWarning(String errorTitle, String errorHeader, String errorMessage){
+    private void displayWarning(String errorTitle, String errorHeader, String errorMessage) {
         Alert alert = new Alert(AlertType.WARNING);
         alert.setTitle(errorTitle);
         alert.setHeaderText(errorHeader);
@@ -32,56 +35,56 @@ public class Register {
         alert.show();
     }
 
-
-    private void validateInformation(String Username, String Password, String ConfirmPassword, String PhoneNumber, String Email){
+    private void validateInformation(String Username, String Password, String ConfirmPassword, String PhoneNumber,
+            String Email) {
         final String errorTitle = "Invalid Input";
         String errorHeader = "";
         String errorMessage = "";
         AuthController control = new AuthController();
 
-        if(!(Username.length() >= 4 && Username.length() <= 20)){
+        if (!(Username.length() >= 4 && Username.length() <= 20)) {
             errorHeader = "Username is invalid";
             errorMessage = "Username must contain 4 - 20 character";
             displayWarning(errorTitle, errorHeader, errorMessage);
             return;
         }
 
-        if(!(Email.contains("@"))){
+        if (!(Email.contains("@"))) {
             errorHeader = "Email is invalid";
             errorMessage = "Email must contain @";
             displayWarning(errorTitle, errorHeader, errorMessage);
             return;
         }
 
-        if(!(Password.length() >= 6 && Password.length() <= 20)){
+        if (!(Password.length() >= 6 && Password.length() <= 20)) {
             errorHeader = "Password is invalid";
             errorMessage = "Password must contains 6 - 20 characters";
             displayWarning(errorTitle, errorHeader, errorMessage);
             return;
         }
 
-        if(!(Password.matches("^[a-zA-Z0-9_]+$"))){
+        if (!(Password.matches("^[a-zA-Z0-9_]+$"))) {
             errorHeader = "Password is invalid";
             errorMessage = "Password must be alphanumeric";
             displayWarning(errorTitle, errorHeader, errorMessage);
             return;
         }
 
-        if(!(Password.equals(ConfirmPassword))){
+        if (!(Password.equals(ConfirmPassword))) {
             errorHeader = "Password is invalid";
             errorMessage = "Password must be the same with confirm password";
             displayWarning(errorTitle, errorHeader, errorMessage);
             return;
         }
 
-        if(!(PhoneNumber.matches("^[0-9]+$"))){
+        if (!(PhoneNumber.matches("^[0-9]+$"))) {
             errorHeader = "Phone number is invalid";
             errorMessage = "Phone number must be numeric";
             displayWarning(errorTitle, errorHeader, errorMessage);
             return;
         }
 
-        if(!(PhoneNumber.length() >= 9 && PhoneNumber.length() <= 20)){
+        if (!(PhoneNumber.length() >= 9 && PhoneNumber.length() <= 20)) {
             errorHeader = "Phone number is invalid";
             errorMessage = "Phone number must be 9 - 20 numbers";
             displayWarning(errorTitle, errorHeader, errorMessage);
@@ -89,23 +92,35 @@ public class Register {
         }
 
         try {
-            if(!(control.validateEmail(Email))){
-                
+            if (!(control.validateEmail(Email))) {
+                System.out.println(control.validateEmail(Email));
+                errorHeader = "Invalid Email";
+                errorMessage = "Email must be unique";
+                displayWarning(errorTitle, errorHeader, errorMessage);
+                return;
             }
+
+            control.createUser(Username, Password, PhoneNumber, Email);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText("Registration Successful!");
+            alert.setContentText("You can login now.");
+            router.displayLogin();
+
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
-    public Scene display(){
-        
+    public Scene display() {
+
         mainLayout = new BorderPane();
         mainLayout.setTop(menuBar.displayInitial());
-        
+
         VBox mainContainer = new VBox();
         Text banner = new Text("Register");
-        banner.setFont(Font.font("Verdana", FontWeight.BOLD , 45));
+        banner.setFont(Font.font("Verdana", FontWeight.BOLD, 45));
         mainContainer.setMaxWidth(480);
         mainContainer.setSpacing(5);
         mainContainer.setAlignment(Pos.CENTER);
@@ -116,20 +131,18 @@ public class Register {
         usernameContainer.setMaxWidth(480);
         usernameContainer.getChildren().addAll(usernameLabel, username);
 
-
         VBox emailContainer = new VBox();
         Label emailLabel = new Label("Email");
         TextField email = new TextField();
         emailContainer.setMaxWidth(480);
         emailContainer.getChildren().addAll(emailLabel, email);
 
-
         VBox passwordContainer = new VBox();
         Label passwordLabel = new Label("Password");
         PasswordField password = new PasswordField();
         passwordContainer.setMaxWidth(480);
         passwordContainer.getChildren().addAll(passwordLabel, password);
-        
+
         VBox confirmPasswordContainer = new VBox();
         Label confirmPasswordLabel = new Label("Confirm Password");
         PasswordField confirmPassword = new PasswordField();
@@ -146,17 +159,20 @@ public class Register {
         submit.setPadding(new Insets(5));
         submit.setMinHeight(18);
 
-        
         submit.setOnAction(e -> {
-            String emailInput = email.getText();
-            String passwordInput = password.getText();
-            validateInformation(passwordInput, emailInput, passwordInput, passwordInput, passwordInput);
-            
+            validateInformation(
+                    username.getText(),
+                    password.getText(),
+                    confirmPassword.getText(),
+                    phone.getText(),
+                    email.getText());
+
         });
-        
-        mainContainer.getChildren().addAll(banner, usernameContainer, emailContainer, passwordContainer, confirmPasswordContainer, phoneContainer, submit);
+
+        mainContainer.getChildren().addAll(banner, usernameContainer, emailContainer, passwordContainer,
+                confirmPasswordContainer, phoneContainer, submit);
         mainLayout.setCenter(mainContainer);
-        
+
         primaryScene = new Scene(mainLayout, 1080, 720);
         return primaryScene;
     }

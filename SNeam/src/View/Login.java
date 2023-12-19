@@ -1,6 +1,6 @@
 package View;
 
-import Controller.LoginController;
+import Controller.AuthController;
 import Util.Router;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -21,11 +21,10 @@ import javafx.stage.Stage;
 
 public class Login {
     Scene primaryScene;
-    BorderPane mainLayout = new BorderPane();
-
+    
     private void validateCredential(String email, String password) {
-        LoginController control = new LoginController();
-
+        AuthController control = new AuthController();
+        
         if (control.validateUser(email, password)) {
             Router router = Router.getRouterInstance(new Stage());
             router.displayUserHome();
@@ -36,11 +35,12 @@ public class Login {
             alert.setContentText("Email or Password is invalid");
             alert.show();
         }
-
+        
     }
-
+    
     public Scene display(){
         
+        BorderPane mainLayout = new BorderPane();
         MenuDisplay menuBar = new MenuDisplay();
         mainLayout.setTop(menuBar.displayInitial());
         
